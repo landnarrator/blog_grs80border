@@ -17,30 +17,39 @@
     /* 구역 라벨 */
     .zone-label span {
       background: white;
-      padding: 2px 6px;
+      padding: 0.3em 0.5em;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: clamp(10px, 3vw, 14px); /* 반응형 폰트 */
       color: black;
-      display: inline-block; /* 텍스트 길이에 맞게 자동 조정 */
-      white-space: nowrap;   /* 줄바꿈 방지 */
+      display: inline-block;
+      white-space: nowrap;
     }
 
     /* 원점 라벨 */
     .origin-label {
       color: red;
       font-weight: bold;
-      font-size: 13px;
+      font-size: clamp(9px, 2.5vw, 13px);
       text-align: left;
       text-shadow: 1px 1px 2px white;
       white-space: nowrap;
     }
 
+    /* 레이어 컨트롤 & 정보 박스 */
     .leaflet-control.custom {
       background: white;
-      padding: 8px 10px;
+      padding: clamp(4px, 1.5vw, 8px) clamp(6px, 2vw, 10px);
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      font-size: 13px;
+      font-size: clamp(10px, 3vw, 13px);
+      max-width: 90vw;
+      overflow-wrap: break-word;
+    }
+
+    /* 레이어 컨트롤 메뉴 모바일 최적화 */
+    .leaflet-control-layers {
+      max-height: 50vh;
+      overflow-y: auto;
     }
   </style>
 </head>
@@ -82,9 +91,9 @@
     }
 
     const boundaries = L.layerGroup([
-      meridianPolyline(126), // 서부–중부
-      meridianPolyline(128), // 중부–동부
-      meridianPolyline(130), // 동부–동해
+      meridianPolyline(126),
+      meridianPolyline(128),
+      meridianPolyline(130),
     ]).addTo(map);
 
     // 구역 라벨
@@ -112,43 +121,20 @@
         icon: L.divIcon({
           className: 'origin-label',
           html: text,
-          iconAnchor: [0, 0] // 좌표 위치에서 글자가 왼쪽→오른쪽으로
+          iconAnchor: [0, 0]
         }),
         interactive: false
       });
     }
 
     const origins = L.layerGroup([
-      L.circleMarker([38.0, 125.0], {
-        radius: 5,
-        color: 'red',
-        fillColor: 'red',
-        fillOpacity: 1.0
-      }),
+      L.circleMarker([38.0, 125.0], { radius: 5, color: 'red', fillColor: 'red', fillOpacity: 1.0 }),
       originLabel('서부 원점 (38N, 125E)', 38.0, 125.0),
-
-      L.circleMarker([38.0, 127.0], {
-        radius: 5,
-        color: 'red',
-        fillColor: 'red',
-        fillOpacity: 1.0
-      }),
+      L.circleMarker([38.0, 127.0], { radius: 5, color: 'red', fillColor: 'red', fillOpacity: 1.0 }),
       originLabel('중부 원점 (38N, 127E)', 38.0, 127.0),
-
-      L.circleMarker([38.0, 129.0], {
-        radius: 5,
-        color: 'red',
-        fillColor: 'red',
-        fillOpacity: 1.0
-      }),
+      L.circleMarker([38.0, 129.0], { radius: 5, color: 'red', fillColor: 'red', fillOpacity: 1.0 }),
       originLabel('동부 원점 (38N, 129E)', 38.0, 129.0),
-
-      L.circleMarker([38.0, 131.0], {
-        radius: 5,
-        color: 'red',
-        fillColor: 'red',
-        fillOpacity: 1.0
-      }),
+      L.circleMarker([38.0, 131.0], { radius: 5, color: 'red', fillColor: 'red', fillOpacity: 1.0 }),
       originLabel('동해 원점 (38N, 131E)', 38.0, 131.0),
     ]).addTo(map);
 
@@ -178,6 +164,11 @@
       return div;
     };
     info.addTo(map);
+
+    // 화면 크기 변화 시 지도 리사이즈
+    window.addEventListener('resize', () => {
+      map.invalidateSize();
+    });
   </script>
 </body>
 </html>
