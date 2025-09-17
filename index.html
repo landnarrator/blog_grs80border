@@ -107,8 +107,8 @@
 
     const baseMaps = { 'OpenStreetMap': osm };
 
-    // 레이어 컨트롤: 기본 접힘 상태(collapsed: true)
-    L.control.layers(baseMaps, overlayMaps, { collapsed: true }).addTo(map);
+    // 레이어 컨트롤: 항상 펼쳐진 상태
+    L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
 
     const info = L.control({ position: 'topleft' });
     info.onAdd = function() {
