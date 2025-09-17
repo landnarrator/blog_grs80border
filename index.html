@@ -114,12 +114,12 @@
     info.onAdd = function() {
       const div = L.DomUtil.create('div', 'leaflet-control custom');
       div.innerHTML = `
-        <b>GRS80 지역좌표 경계선</b><br/>
-        세로 빨간 점선은 좌표계 경계(경도)입니다.<br/>
+        <b>범례</b><br/>
+        빨간 점선: 좌표계 경계(경도)<br/>
         • 서부–중부: 126°E<br/>
         • 중부–동부: 128°E<br/>
         • 동부–동해: 130°E<br/>
-        <span style="color:red">붉은 ● = 원점 좌표</span>
+        <span style="color:red">● = 원점 좌표</span>
       `;
       return div;
     };
