@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GRS80 지역좌표 경계선 표시</title>
-  <!-- Leaflet CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -14,18 +13,16 @@
     html, body { height: 100%; margin: 0; }
     #map { height: 100%; width: 100%; }
 
-    /* 구역 라벨 */
     .zone-label span {
       background: white;
       padding: 0.3em 0.5em;
       border-radius: 4px;
-      font-size: clamp(10px, 3vw, 14px); /* 반응형 폰트 */
+      font-size: clamp(10px, 3vw, 14px);
       color: black;
       display: inline-block;
       white-space: nowrap;
     }
 
-    /* 원점 라벨 */
     .origin-label {
       color: red;
       font-weight: bold;
@@ -35,7 +32,6 @@
       white-space: nowrap;
     }
 
-    /* 레이어 컨트롤 & 정보 박스 */
     .leaflet-control.custom {
       background: white;
       padding: clamp(4px, 1.5vw, 8px) clamp(6px, 2vw, 10px);
@@ -46,7 +42,6 @@
       overflow-wrap: break-word;
     }
 
-    /* 레이어 컨트롤 메뉴 모바일 최적화 */
     .leaflet-control-layers {
       max-height: 50vh;
       overflow-y: auto;
@@ -56,54 +51,28 @@
 <body>
   <div id="map"></div>
 
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    crossorigin=""
-  ></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script>
-    // 지도 생성
-    const map = L.map('map', {
-      zoomControl: true,
-      minZoom: 5,
-      maxZoom: 18
-    });
+    const map = L.map('map', { zoomControl: true, minZoom: 5, maxZoom: 18 });
 
     const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // 초기 뷰 (대한민국 전체)
     map.fitBounds([[33.0, 124.0], [39.6, 132.0]]);
 
-    // 경계선 함수
     function meridianPolyline(lon, latMin = 32.0, latMax = 40.5, step = 0.05) {
       const latlngs = [];
-      for (let lat = latMin; lat <= latMax; lat += step) {
-        latlngs.push([lat, lon]);
-      }
-      return L.polyline(latlngs, {
-        color: 'red',
-        weight: 2.5,
-        dashArray: '6,6',
-      });
+      for (let lat = latMin; lat <= latMax; lat += step) latlngs.push([lat, lon]);
+      return L.polyline(latlngs, { color: 'red', weight: 2.5, dashArray: '6,6' });
     }
 
-    const boundaries = L.layerGroup([
-      meridianPolyline(126),
-      meridianPolyline(128),
-      meridianPolyline(130),
-    ]).addTo(map);
+    const boundaries = L.layerGroup([meridianPolyline(126), meridianPolyline(128), meridianPolyline(130)]).addTo(map);
 
-    // 구역 라벨
     function zoneLabel(text, lat, lon) {
       return L.marker([lat, lon], {
-        icon: L.divIcon({
-          className: "zone-label",
-          html: `<span>${text}</span>`,
-          iconSize: null
-        }),
+        icon: L.divIcon({ className: "zone-label", html: `<span>${text}</span>`, iconSize: null }),
         interactive: false
       });
     }
@@ -112,33 +81,24 @@
       zoneLabel('서부 (124°E–126°E)', 39.3, 124.3),
       zoneLabel('중부 (126°E–128°E)', 39.3, 126.3),
       zoneLabel('동부 (128°E–130°E)', 39.3, 128.3),
-      zoneLabel('동해 (130°E–132°E)', 39.3, 130.3),
+      zoneLabel('동해 (130°E–132°E)', 39.3, 130.3)
     ]).addTo(map);
 
-    // 원점 라벨
     function originLabel(text, lat, lon) {
-      return L.marker([lat, lon], {
-        icon: L.divIcon({
-          className: 'origin-label',
-          html: text,
-          iconAnchor: [0, 0]
-        }),
-        interactive: false
-      });
+      return L.marker([lat, lon], { icon: L.divIcon({ className: 'origin-label', html: text, iconAnchor: [0,0] }), interactive: false });
     }
 
     const origins = L.layerGroup([
-      L.circleMarker([38.0, 125.0], { radius: 5, color: 'red', fillColor: 'red', fillOpacity: 1.0 }),
+      L.circleMarker([38.0, 125.0], { radius:5, color:'red', fillColor:'red', fillOpacity:1.0 }),
       originLabel('서부 원점 (38N, 125E)', 38.0, 125.0),
-      L.circleMarker([38.0, 127.0], { radius: 5, color: 'red', fillColor: 'red', fillOpacity: 1.0 }),
+      L.circleMarker([38.0, 127.0], { radius:5, color:'red', fillColor:'red', fillOpacity:1.0 }),
       originLabel('중부 원점 (38N, 127E)', 38.0, 127.0),
-      L.circleMarker([38.0, 129.0], { radius: 5, color: 'red', fillColor: 'red', fillOpacity: 1.0 }),
+      L.circleMarker([38.0, 129.0], { radius:5, color:'red', fillColor:'red', fillOpacity:1.0 }),
       originLabel('동부 원점 (38N, 129E)', 38.0, 129.0),
-      L.circleMarker([38.0, 131.0], { radius: 5, color: 'red', fillColor: 'red', fillOpacity: 1.0 }),
-      originLabel('동해 원점 (38N, 131E)', 38.0, 131.0),
+      L.circleMarker([38.0, 131.0], { radius:5, color:'red', fillColor:'red', fillOpacity:1.0 }),
+      originLabel('동해 원점 (38N, 131E)', 38.0, 131.0)
     ]).addTo(map);
 
-    // 레이어 컨트롤
     const overlayMaps = {
       '경계선 (126E·128E·130E)': boundaries,
       '영역 라벨': labels,
@@ -147,9 +107,9 @@
 
     const baseMaps = { 'OpenStreetMap': osm };
 
-    L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
+    // 레이어 컨트롤: 기본 접힘 상태(collapsed: true)
+    L.control.layers(baseMaps, overlayMaps, { collapsed: true }).addTo(map);
 
-    // 설명 박스
     const info = L.control({ position: 'topleft' });
     info.onAdd = function() {
       const div = L.DomUtil.create('div', 'leaflet-control custom');
@@ -165,10 +125,7 @@
     };
     info.addTo(map);
 
-    // 화면 크기 변화 시 지도 리사이즈
-    window.addEventListener('resize', () => {
-      map.invalidateSize();
-    });
+    window.addEventListener('resize', () => map.invalidateSize());
   </script>
 </body>
 </html>
